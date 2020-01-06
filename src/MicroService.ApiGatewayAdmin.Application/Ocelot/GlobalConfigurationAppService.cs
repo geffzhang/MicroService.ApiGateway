@@ -3,6 +3,7 @@ using MicroService.ApiGateway.Entites.Ocelot;
 using MicroService.ApiGateway.Ocelot.Dto;
 using MicroService.ApiGateway.Repositories;
 using MicroService.ApiGateway.Snowflake;
+using MicroService.ApiGatewayAdmin.Ocelot.Event;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -50,7 +51,7 @@ namespace MicroService.ApiGateway.Ocelot
 
             globalConfiguration = await _globalConfigRepository.InsertAsync(globalConfiguration, true);
 
-            await _eventPublisher.PublishAsync(ApiGatewayDomainConsts.Events_OcelotConfigChanged, Clock.Now);
+            await _eventPublisher.PublishAsync(ApiGatewayDomainConsts.Events_OcelotConfigChanged, new OcelotConfigChangeCommand("Global", "Create"));
 
             return ObjectMapper.Map<GlobalConfiguration, GlobalConfigurationDto>(globalConfiguration);
         }
@@ -71,7 +72,7 @@ namespace MicroService.ApiGateway.Ocelot
 
             globalConfiguration = await _globalConfigRepository.UpdateAsync(globalConfiguration, true);
 
-            await _eventPublisher.PublishAsync(ApiGatewayDomainConsts.Events_OcelotConfigChanged, Clock.Now);
+            await _eventPublisher.PublishAsync(ApiGatewayDomainConsts.Events_OcelotConfigChanged, new OcelotConfigChangeCommand("Global", "Modify"));
 
             return ObjectMapper.Map<GlobalConfiguration, GlobalConfigurationDto>(globalConfiguration);
         }
@@ -79,10 +80,9 @@ namespace MicroService.ApiGateway.Ocelot
 
         private void ApplyGlobalConfigurationOptions(GlobalConfiguration globalConfiguration, GlobalConfigurationDto configurationDto)
         {
-
-            if (!string.IsNullOrWhiteSpace(configurationDto.ServiceDiscoveryProvider.Host)){
-                globalConfiguration.ServiceDiscoveryProvider.BindServiceRegister(configurationDto.ServiceDiscoveryProvider.Host, configurationDto.ServiceDiscoveryProvider.Port);
-            }
+            globalConfiguration.ServiceDiscoveryProvider.Type = configurationDto.ServiceDiscoveryProvider.Type;
+            globalConfiguration.ServiceDiscoveryProvider
+                .BindServiceRegister(configurationDto.ServiceDiscoveryProvider.Host, configurationDto.ServiceDiscoveryProvider.Port);
 
             globalConfiguration.HttpHandlerOptions.ApplyAllowAutoRedirect(configurationDto.HttpHandlerOptions.AllowAutoRedirect);
             globalConfiguration.HttpHandlerOptions.ApplyCookieContainer(configurationDto.HttpHandlerOptions.UseCookieContainer);

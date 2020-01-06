@@ -28,6 +28,8 @@ using Volo.Abp.Localization.Resources.AbpValidation;
 using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
+using Volo.Abp.Timing;
+using Serilog;
 
 namespace MicroService.ApiGateway
 {
@@ -57,6 +59,15 @@ namespace MicroService.ApiGateway
         {
             var hostingEnvironment = context.Services.GetHostingEnvironment();
             var configuration = context.Services.GetConfiguration();
+
+            Log.Logger = new LoggerConfiguration()
+               .ReadFrom.Configuration(configuration)
+               .CreateLogger();
+
+            Configure<ClockOptions>(options =>
+            {
+                options.Kind = System.DateTimeKind.Local;
+            });
 
             ConfigureIdentityAuthentication(context.Services, configuration.GetSection("Identity"));
             ConfigureDatabaseServices();
@@ -132,7 +143,7 @@ namespace MicroService.ApiGateway
             {
                 options.SignInScheme = AuthenticationConsts.CookieName;
                 options.Authority = configuration.GetValue<string>("Host");
-                options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
+                //options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
                 options.RequireHttpsMetadata = false;
 
                 options.ClientId = configuration.GetValue<string>("ClientId");
@@ -168,7 +179,7 @@ namespace MicroService.ApiGateway
         {
             Configure<AbpDbContextOptions>(options =>
             {
-                options.UseSqlServer();
+                options.UseMySQL();
             });
         }
 
@@ -244,7 +255,7 @@ namespace MicroService.ApiGateway
             {
                 app.UseErrorPage();
             }
-
+            app.UseCorrelationId();
             app.UseVirtualFiles();
             app.UseAuthentication();
             app.UseAbpRequestLocalization();
