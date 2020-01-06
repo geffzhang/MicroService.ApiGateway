@@ -4,7 +4,7 @@ using Volo.Abp.EntityFrameworkCore.Modeling;
 
 namespace MicroService.ApiGateway.EntityFrameworkCore
 {
-    public class ApiGatewayModelBuilderConfigurationOptions : ModelBuilderConfigurationOptions
+    public class ApiGatewayModelBuilderConfigurationOptions : AbpModelBuilderConfigurationOptions
     {
         public ApiGatewayModelBuilderConfigurationOptions(
             [NotNull] string tablePrefix = ApiGatewaySettings.DefaultDbTablePrefix,

@@ -45,14 +45,14 @@ namespace MicroService.ApiGateway.Ocelot
 
         public async Task RemoveAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var entityType = DbContext.Model.FindEntityType(typeof(ReRoute));
-            var tableName = entityType.Relational().TableName;
+            //var entityType = DbContext.Model.FindEntityType(typeof(ReRoute));
+            //var tableName = entityType.().TableName;
 
-            var sqlText = $"DELETE FROM @tableName";
-            var sqlParam = new List<object> { new { tableName } };
+            //var sqlText = $"DELETE FROM @tableName";
+            //var sqlParam = new List<object> { new { tableName } };
 
-            // TODO: Test
-            await DbContext.Database.ExecuteSqlCommandAsync(sqlText, sqlParam, cancellationToken);
+            //// TODO: Test
+            //await DbContext.Database.ExecuteSqlCommandAsync(sqlText, sqlParam, cancellationToken);
         }
 
         public override IQueryable<ReRoute> WithDetails()

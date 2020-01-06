@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.InProcess;
+//using Microsoft.AspNetCore.InProcess;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
@@ -11,7 +11,7 @@ namespace MicroService.ApiGateway
     {
         public static int Main(string[] args)
         {
-            CurrentDirectoryHelpers.SetCurrentDirectory();
+            //CurrentDirectoryHelpers.SetCurrentDirectory();
             try
             {
                 Log.Information("Starting web host.");

@@ -8,14 +8,11 @@ namespace MicroService.ApiGateway
 {
     public class Startup
     {
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApplication<MicroServiceApiGatewayModule>(options =>
-            {
-                options.UseAutofac();
-            });
+            services.AddApplication<MicroServiceApiGatewayModule>( );
 
-            return services.BuildServiceProviderFromFactory();
+           
         }
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)

@@ -140,7 +140,7 @@ namespace Ocelot.Extenssions
 
         private static void ConfigureDiagnosticListener(IApplicationBuilder builder)
         {
-            var env = builder.ApplicationServices.GetService<IHostingEnvironment>();
+            var env = builder.ApplicationServices.GetService<IWebHostEnvironment>();
             var listener = builder.ApplicationServices.GetService<OcelotDiagnosticListener>();
             var diagnosticListener = builder.ApplicationServices.GetService<DiagnosticListener>();
             diagnosticListener.SubscribeWithAdapter(listener);

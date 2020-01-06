@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 using System.IdentityModel.Tokens.Jwt;
@@ -30,6 +30,8 @@ using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
 using Volo.Abp.Timing;
 using Serilog;
+using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Hosting;
 
 namespace MicroService.ApiGateway
 {
@@ -64,7 +66,7 @@ namespace MicroService.ApiGateway
                .ReadFrom.Configuration(configuration)
                .CreateLogger();
 
-            Configure<ClockOptions>(options =>
+            Configure<AbpClockOptions>(options =>
             {
                 options.Kind = System.DateTimeKind.Local;
             });
@@ -105,7 +107,7 @@ namespace MicroService.ApiGateway
 
         private void ConfigureBundling()
         {
-            Configure<BundlingOptions>(options =>
+            Configure<AbpBundlingOptions>(options =>
             {
                 options
                     .StyleBundles
@@ -191,7 +193,7 @@ namespace MicroService.ApiGateway
             });
         }
 
-        private void ConfigureVirtualFileSystem(IHostingEnvironment hostingEnvironment)
+        private void ConfigureVirtualFileSystem(IWebHostEnvironment hostingEnvironment)
         {
             //if (hostingEnvironment.IsDevelopment())
             //{
@@ -217,7 +219,7 @@ namespace MicroService.ApiGateway
 
         private void ConfigureNavigationServices()
         {
-            Configure<NavigationOptions>(options =>
+            Configure<AbpNavigationOptions>(options =>
             {
                 options.MenuContributors.Add(new WebServiceMenuContributor());
             });
@@ -236,7 +238,7 @@ namespace MicroService.ApiGateway
             services.AddSwaggerGen(
                 options =>
                 {
-                    options.SwaggerDoc("v1", new Info { Title = "MicroService.ApiGatewayAdmin API", Version = "v1" });
+                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "MicroService.ApiGatewayAdmin API", Version = "v1" });
                     options.DocInclusionPredicate((docName, description) => true);
                     options.CustomSchemaIds(type => type.FullName);
                 });

@@ -51,7 +51,7 @@ namespace MicroService.ApiGateway
                 .AddPolly();
         }
 
-        private void ConfigureCAP(IServiceCollection services, IConfigurationRoot configuration)
+        private void ConfigureCAP(IServiceCollection services, IConfiguration configuration)
         {
             services.AddCap(x =>
             {

@@ -1,4 +1,4 @@
-﻿using DotNetCore.CAP.Infrastructure;
+﻿using DotNetCore.CAP.Internal;
 using Volo.Abp.DependencyInjection;
 
 namespace MicroService.ApiGateway.Snowflake
