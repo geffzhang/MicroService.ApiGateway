@@ -257,6 +257,7 @@ namespace MicroService.ApiGateway
             {
                 app.UseErrorPage();
             }
+            app.UseRouting();
             app.UseCorrelationId();
             app.UseVirtualFiles();
             app.UseAuthentication();

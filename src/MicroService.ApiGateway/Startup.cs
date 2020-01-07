@@ -10,9 +10,7 @@ namespace MicroService.ApiGateway
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApplication<MicroServiceApiGatewayModule>( );
-
-           
+            services.AddApplication<MicroServiceApiGatewayModule>( );           
         }
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
