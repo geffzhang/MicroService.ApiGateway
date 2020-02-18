@@ -13,10 +13,12 @@ using Volo.Abp.Autofac;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Http.Client.IdentityModel;
 using Volo.Abp.Modularity;
+using Yhd.Abp.EventBus.Cap;
 
 namespace MicroService.ApiGateway
 {
     [DependsOn(
+        typeof(CapModule),
         typeof(AbpAutofacModule),
         typeof(AbpHttpClientIdentityModelModule),
         typeof(AbpAutoMapperModule),
@@ -43,7 +45,7 @@ namespace MicroService.ApiGateway
             if (configuration.GetValue<bool>("EnabledDynamicOcelot"))
             {
                 context.Services.AddSingleton<IFileConfigurationRepository, ApiHttpClientFileConfigurationRepository>();
-                ConfigureCAP(context.Services, configuration);
+                ConfigureCAP(context, configuration);
             }
 
             context.Services
@@ -51,15 +53,30 @@ namespace MicroService.ApiGateway
                 .AddPolly();
         }
 
-        private void ConfigureCAP(IServiceCollection services, IConfigurationRoot configuration)
+        private void ConfigureCAP(ServiceConfigurationContext context, IConfiguration configuration)
         {
-            services.AddCap(x =>
+            // context.Services.AddCap(x =>
+            // {
+            //     x.UseInMemoryStorage();
+            //
+            //     // x.UseDashboard();
+            //
+            //     x.UseRabbitMQ(cfg =>
+            //     {
+            //         cfg.HostName = configuration.GetValue<string>("CAP:RabbitMQ:Connect:Host");
+            //         cfg.VirtualHost = configuration.GetValue<string>("CAP:RabbitMQ:Connect:VirtualHost");
+            //         cfg.Port = configuration.GetValue<int>("CAP:RabbitMQ:Connect:Port");
+            //         cfg.UserName = configuration.GetValue<string>("CAP:RabbitMQ:Connect:UserName");
+            //         cfg.Password = configuration.GetValue<string>("CAP:RabbitMQ:Connect:Password");
+            //         cfg.ExchangeName = configuration.GetValue<string>("CAP:RabbitMQ:Connect:ExchangeName");
+            //     });
+            //
+            //     x.FailedRetryCount = 5;
+            // });
+            context.AddCapEventBus(capOptions =>
             {
-                x.UseInMemoryStorage();
-
-                x.UseDashboard();
-
-                x.UseRabbitMQ(cfg =>
+                capOptions.UseInMemoryStorage();
+                capOptions.UseRabbitMQ(cfg =>
                 {
                     cfg.HostName = configuration.GetValue<string>("CAP:RabbitMQ:Connect:Host");
                     cfg.VirtualHost = configuration.GetValue<string>("CAP:RabbitMQ:Connect:VirtualHost");
@@ -69,7 +86,8 @@ namespace MicroService.ApiGateway
                     cfg.ExchangeName = configuration.GetValue<string>("CAP:RabbitMQ:Connect:ExchangeName");
                 });
 
-                x.FailedRetryCount = 5;
+                capOptions.FailedRetryCount = 5;//UseRabbitMQ 服务器地址配置，支持配置IP地址和密码
+                // capOptions.UseDashboard();//CAP2.X版本以后官方提供了Dashboard页面访问。
             });
         }
 
