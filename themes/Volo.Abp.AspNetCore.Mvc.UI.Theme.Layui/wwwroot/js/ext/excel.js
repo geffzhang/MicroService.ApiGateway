@@ -98,7 +98,7 @@ layui.define(['jquery', 'xlsx', 'FileSaver'], function(exports){
 					}
 				}
 				wb.Sheets[sheet_name] = ws;
-			};
+			}
 
 			// 4. 输出工作表
 			var wbout = XLSX.write(wb, {bookType: type, type: 'binary', cellStyles: true});
@@ -241,7 +241,7 @@ layui.define(['jquery', 'xlsx', 'FileSaver'], function(exports){
 					startIndex = currentIndex+1;
 					change.push({wpx: item > 0 ? item : defaultNum});
 				}
-			};
+			}
 			return change;
 		},
 		/**
@@ -267,7 +267,7 @@ layui.define(['jquery', 'xlsx', 'FileSaver'], function(exports){
 					startIndex = currentIndex+1;
 					change.push({hpx: item > 0 ? item : defaultNum});
 				}
-			};
+			}
 			return change;
 		},
 		/**
@@ -426,7 +426,7 @@ layui.define(['jquery', 'xlsx', 'FileSaver'], function(exports){
 						if (wb.Sheets.hasOwnProperty(sheet)) {
 							var opt = {
 								header: option.header,
-							}
+							};
 							if (!option.range) {
 								opt.range = option.range;
 							}
@@ -442,7 +442,7 @@ layui.define(['jquery', 'xlsx', 'FileSaver'], function(exports){
 					if (index == files.length - 1) {
 						callback && callback.apply && callback.apply(window, [data]);
 					}
-				}
+				};
 				reader.readAsBinaryString(item);
 			});
 		}

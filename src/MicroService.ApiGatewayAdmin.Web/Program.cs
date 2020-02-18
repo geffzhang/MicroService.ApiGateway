@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.InProcess;
-using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
 using System.IO;
@@ -11,7 +9,7 @@ namespace MicroService.ApiGateway
     {
         public static int Main(string[] args)
         {
-            CurrentDirectoryHelpers.SetCurrentDirectory();
+            // CurrentDirectoryHelpers.SetCurrentDirectory();
             try
             {
                 Log.Information("Starting web host.");
@@ -21,6 +19,7 @@ namespace MicroService.ApiGateway
             catch (Exception ex)
             {
                 Log.Fatal(ex, "Host terminated unexpectedly!");
+                Console.WriteLine(ex.Message);
                 return 1;
             }
             finally
@@ -31,6 +30,7 @@ namespace MicroService.ApiGateway
 
         public static IWebHost BuildWebHostInternal(string[] args) =>
             new WebHostBuilder()
+                .UseUrls("http://*:8080")
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()

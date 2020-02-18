@@ -29,7 +29,7 @@ layui.define(["element","jquery"],function(exports){
 		$(window).resize(function(){
 			$(".navBar").height($(window).height()-210);
 		})
-	}
+	};
 
 	//是否点击窗口切换刷新页面
 	Tab.prototype.changeRegresh = function(index){
@@ -39,7 +39,7 @@ layui.define(["element","jquery"],function(exports){
                 iframe.contentWindow.location.reload();
             }
         }
-	}
+	};
 
 	//参数设置
 	Tab.prototype.set = function(option) {
@@ -54,9 +54,9 @@ layui.define(["element","jquery"],function(exports){
 			if($(this).find("cite").text() == title){
 				layId = $(this).attr("lay-id");
 			}
-		})
+		});
 		return layId;
-	}
+	};
 	//通过title判断tab是否存在
 	Tab.prototype.hasTab = function(title){
 		var tabIndex = -1;
@@ -64,9 +64,9 @@ layui.define(["element","jquery"],function(exports){
 			if($(this).find("cite").text() == title){
 				tabIndex = 1;
 			}
-		})
+		});
 		return tabIndex;
-	}
+	};
 
 	//右侧内容tab操作
 	var tabIdIndex = 0;
@@ -101,14 +101,14 @@ layui.define(["element","jquery"],function(exports){
 			        title : title,
 			        content :"<iframe src='"+_this.attr("address")+"' data-id='"+tabIdIndex+"' style='top: 10px;'></frame>",
 			        id : new Date().getTime()
-			    })
+			    });
 				//当前窗口内容
 				var curmenu = {
 					"icon" : _this.find("i.seraph").attr("images")!=undefined ? _this.find("i.seraph").attr("images") : _this.find("i.layui-icon").attr("images"),
 					"title" : _this.find("cite").text(),
 					"href" : _this.attr("address"),
 					"layId" : new Date().getTime()
-				}
+				};
 				menu.push(curmenu);
 				window.sessionStorage.setItem("menu",JSON.stringify(menu)); //打开的窗口
 				window.sessionStorage.setItem("curmenu",JSON.stringify(curmenu));  //当前的窗口
@@ -120,14 +120,14 @@ layui.define(["element","jquery"],function(exports){
 					"icon" : _this.find("i.seraph").attr("images")!=undefined ? _this.find("i.seraph").attr("images") : _this.find("i.layui-icon").attr("images"),
 					"title" : _this.find("cite").text(),
 					"href" : _this.attr("address")
-				}
+				};
                 that.changeRegresh(_this.parent('.layui-nav-item').index());
 				window.sessionStorage.setItem("curmenu", JSON.stringify(curmenu));  //当前的窗口
 				element.tabChange(tabFilter, that.getLayId(_this.find("cite").text()));
 				that.tabMove(); //顶部窗口是否可滚动
 			}
 		}
-	}
+	};
 
 	//顶部窗口移动
 	Tab.prototype.tabMove = function(){
@@ -151,7 +151,7 @@ layui.define(["element","jquery"],function(exports){
 				var cur = {
 				    x:0,
 				    y:0
-				}
+				};
 				var nx,dx,x ;
 				function down(){
 				    flag = true;
@@ -217,7 +217,7 @@ layui.define(["element","jquery"],function(exports){
 				return false;
 			}
 		}).resize();
-	}
+	};
 
     //切换后获取当前窗口的内容
 	$("body").on("click",".top_tab li",function(){
@@ -244,7 +244,7 @@ layui.define(["element","jquery"],function(exports){
 		setTimeout(function(){
 			bodyTab.tabMove();
 		},100);
-	})
+	});
 
 	//删除tab
 	$("body").on("click",".top_tab li i.layui-tab-close",function(){
@@ -273,7 +273,7 @@ layui.define(["element","jquery"],function(exports){
         }
 		element.tabDelete("bodyTab",$(this).parent("li").attr("lay-id")).init();
 		bodyTab.tabMove();
-	})
+	});
 
 	//刷新当前
 	$(".refresh").on("click",function(){  //此处添加禁止连续点击刷新一是为了降低服务器压力，另外一个就是为了防止超快点击造成chrome本身的一些js文件的报错(不过貌似这个问题还是存在，不过概率小了很多)
@@ -289,7 +289,7 @@ layui.define(["element","jquery"],function(exports){
         } else {
             layer.msg(_localizer('RefreshIntervalTooShort'));
 		}
-	})
+	});
 
 	//关闭其他
     $(".closePageOther").on("click", function () {
@@ -322,7 +322,7 @@ layui.define(["element","jquery"],function(exports){
 		}
 		//渲染顶部窗口
 		tab.tabMove();
-	})
+	});
 	//关闭全部
 	$(".closePageAll").on("click",function(){
 		if($("#top_tabs li").length > 1){
@@ -339,10 +339,10 @@ layui.define(["element","jquery"],function(exports){
 		}
 		//渲染顶部窗口
 		tab.tabMove();
-	})
+	});
 
 	var bodyTab = new Tab();
 	exports("bodyTab",function(option){
 		return bodyTab.set(option);
 	});
-})
+});

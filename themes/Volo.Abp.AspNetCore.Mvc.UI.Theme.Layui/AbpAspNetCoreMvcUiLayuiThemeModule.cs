@@ -8,8 +8,8 @@ using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared.Toolbars;
 using Volo.Abp.AspNetCore.Mvc.UI.Theming;
 using Volo.Abp.Localization;
-using Volo.Abp.Localization.Resources.AbpValidation;
 using Volo.Abp.Modularity;
+using Volo.Abp.Validation.Localization;
 using Volo.Abp.VirtualFileSystem;
 
 namespace Volo.Abp.AspNetCore.Mvc.UI.Theme.Layui
@@ -22,7 +22,7 @@ namespace Volo.Abp.AspNetCore.Mvc.UI.Theme.Layui
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            Configure<ThemingOptions>(options =>
+            Configure<AbpThemingOptions>(options =>
             {
                 options.Themes.Add<LayuiTheme>();
 
@@ -40,17 +40,17 @@ namespace Volo.Abp.AspNetCore.Mvc.UI.Theme.Layui
                     .AddVirtualJson("/Localization/Layui");
             });
 
-            Configure<VirtualFileSystemOptions>(options =>
+            Configure<AbpVirtualFileSystemOptions>(options =>
             {
                 options.FileSets.AddEmbedded<AbpAspNetCoreMvcUiLayuiThemeModule>("Volo.Abp.AspNetCore.Mvc.UI.Theme.Layui");
             });
 
-            Configure<ToolbarOptions>(options =>
+            Configure<AbpToolbarOptions>(options =>
             {
                 options.Contributors.Add(new LayuiThemeMainTopToolbarContributor());
             });
 
-            Configure<BundlingOptions>(options =>
+            Configure<AbpBundlingOptions>(options =>
             {
                 options
                     .StyleBundles

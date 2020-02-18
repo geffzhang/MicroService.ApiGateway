@@ -1,10 +1,10 @@
-﻿using JetBrains.Annotations;
-using MicroService.ApiGateway.Settings;
+﻿using MicroService.ApiGateway.Settings;
 using Volo.Abp.EntityFrameworkCore.Modeling;
+using JetBrains.Annotations;
 
 namespace MicroService.ApiGateway.EntityFrameworkCore
 {
-    public class ApiGatewayModelBuilderConfigurationOptions : ModelBuilderConfigurationOptions
+    public class ApiGatewayModelBuilderConfigurationOptions : AbpModelBuilderConfigurationOptions
     {
         public ApiGatewayModelBuilderConfigurationOptions(
             [NotNull] string tablePrefix = ApiGatewaySettings.DefaultDbTablePrefix,

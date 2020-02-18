@@ -24,7 +24,7 @@ namespace MicroService.ApiGateway
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            Configure<VirtualFileSystemOptions>(options =>
+            Configure<AbpVirtualFileSystemOptions>(options =>
             {
                 options.FileSets.AddEmbedded<ApiGatewayDomainModule>();
             });
@@ -36,7 +36,7 @@ namespace MicroService.ApiGateway
                     .AddVirtualJson("/MicroService/ApiGatewayAdmin/Domain/Localization/ApiGateway");
             });
 
-            Configure<SettingOptions>(options =>
+            Configure<AbpSettingOptions>(options =>
             {
                 options.DefinitionProviders.Add<ApiGatewaySettingDefinitionProvider>();
             });

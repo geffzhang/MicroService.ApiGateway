@@ -12,7 +12,7 @@ namespace MicroService.ApiGateway.EntityFrameworkCore
             var configuration = BuildConfiguration();
 
             var builder = new DbContextOptionsBuilder<ApiGatewayMigrationsDbContext>()
-                .UseMySql(configuration.GetConnectionString("Default"));
+                .UseSqlServer(configuration.GetConnectionString("Default"));
 
             return new ApiGatewayMigrationsDbContext(builder.Options);
         }

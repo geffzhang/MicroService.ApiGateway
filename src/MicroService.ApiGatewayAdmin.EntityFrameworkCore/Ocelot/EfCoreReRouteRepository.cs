@@ -25,7 +25,7 @@ namespace MicroService.ApiGateway.Ocelot
             var reRoute = await WithDetails().Where(x => x.ReRouteName.Equals(routeName)).FirstOrDefaultAsync();
             return reRoute ?? throw new EntityNotFoundException(typeof(ReRoute), routeName);
         }
-
+        
         public async Task<ReRoute> GetByReRouteIdAsync(long routeId)
         {
             var reRoute = await WithDetails().Where(x => x.ReRouteId.Equals(routeId)).FirstOrDefaultAsync();
@@ -46,7 +46,7 @@ namespace MicroService.ApiGateway.Ocelot
         public async Task RemoveAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var entityType = DbContext.Model.FindEntityType(typeof(ReRoute));
-            var tableName = entityType.Relational().TableName;
+            var tableName = entityType.GetTableName();
 
             var sqlText = $"DELETE FROM @tableName";
             var sqlParam = new List<object> { new { tableName } };

@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor.Extensions;
-using Microsoft.AspNetCore.Razor.Language;
+﻿using Microsoft.AspNetCore.Razor.Language;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace MicroService.ApiGateway.Web.Razor
 {
