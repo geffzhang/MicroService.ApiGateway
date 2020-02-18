@@ -13,6 +13,8 @@ using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.Localization;
@@ -24,16 +26,17 @@ using Volo.Abp.AutoMapper;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.Http.Client.IdentityModel;
 using Volo.Abp.Localization;
-using Volo.Abp.Localization.Resources.AbpValidation;
 using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
 using Volo.Abp.Timing;
 using Serilog;
+using Yhd.Abp.EventBus.Cap;
 
 namespace MicroService.ApiGateway
 {
     [DependsOn(
+        typeof(CapModule),
         typeof(ApiGatewayApplicationModule),
         typeof(ApiGatewayEntityFrameworkCoreModule),
         typeof(AbpHttpClientIdentityModelModule),
@@ -64,7 +67,7 @@ namespace MicroService.ApiGateway
                .ReadFrom.Configuration(configuration)
                .CreateLogger();
 
-            Configure<ClockOptions>(options =>
+            Configure<AbpClockOptions>(options =>
             {
                 options.Kind = System.DateTimeKind.Local;
             });
@@ -78,18 +81,15 @@ namespace MicroService.ApiGateway
             ConfigureAutoApiControllers();
             ConfigureSwaggerServices(context.Services);
             ConfigureBundling();
-            ConfigureCAP(context.Services, configuration);
+            ConfigureCAP(context, configuration);
         }
 
-        private void ConfigureCAP(IServiceCollection services, IConfiguration configuration)
+        private void ConfigureCAP(ServiceConfigurationContext context, IConfiguration configuration)
         {
-            services.AddCap(x =>
+            context.AddCapEventBus(capOptions =>
             {
-                x.UseEntityFramework<ApiGatewayDbContext>();
-
-                x.UseDashboard();
-
-                x.UseRabbitMQ(cfg =>
+                capOptions.UseEntityFramework<ApiGatewayDbContext>();
+                capOptions.UseRabbitMQ(cfg =>
                 {
                     cfg.HostName = configuration.GetValue<string>("CAP:RabbitMQ:Connect:Host");
                     cfg.VirtualHost = configuration.GetValue<string>("CAP:RabbitMQ:Connect:VirtualHost");
@@ -99,13 +99,14 @@ namespace MicroService.ApiGateway
                     cfg.ExchangeName = configuration.GetValue<string>("CAP:RabbitMQ:Connect:ExchangeName");
                 });
 
-                x.FailedRetryCount = 5;
+                capOptions.FailedRetryCount = 5;//UseRabbitMQ 服务器地址配置，支持配置IP地址和密码
+                // capOptions.UseDashboard();//CAP2.X版本以后官方提供了Dashboard页面访问。
             });
         }
 
         private void ConfigureBundling()
         {
-            Configure<BundlingOptions>(options =>
+            Configure<AbpBundlingOptions>(options =>
             {
                 options
                     .StyleBundles
@@ -142,13 +143,13 @@ namespace MicroService.ApiGateway
             .AddOpenIdConnect(AuthenticationConsts.OidcAuthenticationScheme, options =>
             {
                 options.SignInScheme = AuthenticationConsts.CookieName;
-                options.Authority = configuration.GetValue<string>("Host");
+                options.Authority = "http://192.168.111.190:8082";configuration.GetValue<string>("Host");
                 //options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
                 options.RequireHttpsMetadata = false;
-
-                options.ClientId = configuration.GetValue<string>("ClientId");
-                options.ClientSecret = configuration.GetValue<string>("ClientSecret");
-
+            
+                options.ClientId = "123";configuration.GetValue<string>("ClientId");
+                options.ClientSecret = "qwe";configuration.GetValue<string>("ClientSecret");
+            
                 options.Scope.Clear();
                 options.Scope.Add(AuthenticationConsts.ScopeOpenId);
                 options.Scope.Add(AuthenticationConsts.ScopeProfile);
@@ -156,17 +157,18 @@ namespace MicroService.ApiGateway
                 options.Scope.Add(AuthenticationConsts.ScopeRoles);
                 options.Scope.Add(AuthenticationConsts.ScopeCustomProfile);
                 options.Scope.Add(AuthenticationConsts.ScopeRefreshToken);
-
+            
                 options.SaveTokens = true;
-
+            
                 options.GetClaimsFromUserInfoEndpoint = true;
-
+            
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     NameClaimType = "name",
                     RoleClaimType = "role",
                 };
-            });
+            })
+                ;
 
             services.AddAuthorization(options =>
             {
@@ -179,7 +181,7 @@ namespace MicroService.ApiGateway
         {
             Configure<AbpDbContextOptions>(options =>
             {
-                options.UseMySQL();
+                options.UseSqlServer();
             });
         }
 
@@ -191,7 +193,7 @@ namespace MicroService.ApiGateway
             });
         }
 
-        private void ConfigureVirtualFileSystem(IHostingEnvironment hostingEnvironment)
+        private void ConfigureVirtualFileSystem(IWebHostEnvironment hostingEnvironment)
         {
             //if (hostingEnvironment.IsDevelopment())
             //{
@@ -217,7 +219,7 @@ namespace MicroService.ApiGateway
 
         private void ConfigureNavigationServices()
         {
-            Configure<NavigationOptions>(options =>
+            Configure<AbpNavigationOptions>(options =>
             {
                 options.MenuContributors.Add(new WebServiceMenuContributor());
             });
@@ -236,7 +238,7 @@ namespace MicroService.ApiGateway
             services.AddSwaggerGen(
                 options =>
                 {
-                    options.SwaggerDoc("v1", new Info { Title = "MicroService.ApiGatewayAdmin API", Version = "v1" });
+                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "MicroService.ApiGatewayAdmin API", Version = "v1" });
                     options.DocInclusionPredicate((docName, description) => true);
                     options.CustomSchemaIds(type => type.FullName);
                 });
@@ -255,7 +257,7 @@ namespace MicroService.ApiGateway
             {
                 app.UseErrorPage();
             }
-            app.UseCorrelationId();
+            // app.UseCorrelationId();
             app.UseVirtualFiles();
             app.UseAuthentication();
             app.UseAbpRequestLocalization();

@@ -71,14 +71,14 @@ layui.define(['jquery', 'layer'], function (exports) {
         $.each(options.content, function (index, item) {
             spans += '<span><em>' + item + '</em><button type="button" class="close">×</button></span>';
             // $('<div class="layui-flow-more"><a href="javascript:;">'+ ELEM_TEXT +'</a></div>');
-        })
-        options.elem.before(spans)
+        });
+        options.elem.before(spans);
         that.events()
-    }
+    };
 
     Class.prototype.render = function () {
         var that = this
-            , options = that.config
+            , options = that.config;
         options.elem = $(options.elem);
         that.enter()
     };
@@ -95,8 +95,8 @@ layui.define(['jquery', 'layer'], function (exports) {
                 var $val = options.elem.val().trim();
                 if (!$val) return false;
                 if (options.content.indexOf($val) == -1) {
-                    options.content.push($val)
-                    that.render()
+                    options.content.push($val);
+                    that.render();
                     spans = '<span><em>' + $val + '</em><button type="button" class="close">×</button></span>';
                     options.elem.before(spans)
                 }
@@ -112,7 +112,7 @@ layui.define(['jquery', 'layer'], function (exports) {
             , options = that.config;
         $('.albtn').on('click', function () {
             console.log(options.content)
-        })
+        });
         $('#tags').on('click', '.close', function () {
             var Thisremov = $(this).parent('span').remove(),
                 ThisText = $(Thisremov).find('em').text();

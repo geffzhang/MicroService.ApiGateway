@@ -100,7 +100,7 @@ layui.define(['tableFilter', 'tableChild'], function (exports) {
                                                 'background-color': $(this).css('background-color'),
                                                 'width': width
                                             });
-                                        })
+                                        });
                                         if ($totalTable.length>0) {
                                             $totalTable.find('td[data-field=' + $this.data('field') + ']').each(function (e) {
                                                 $(this).after($(this).clone().css('visibility', 'hidden').attr('data-clone', ''));
@@ -125,7 +125,7 @@ layui.define(['tableFilter', 'tableChild'], function (exports) {
                                         $this.css('left',$cloneHead.position().left);
                                         $tableBody.find('td[data-field=' + $this.data('field') + '][data-clone]').each(function (e) {
                                             $(this).prev().css('left', $cloneHead.position().left);
-                                        })
+                                        });
                                         if ($totalTable.length>0) {
                                             $totalTable.find('td[data-field=' + $this.data('field') + '][data-clone]').each(function (e) {
                                                 $(this).prev().css('left', $cloneHead.position().left);
@@ -139,7 +139,7 @@ layui.define(['tableFilter', 'tableChild'], function (exports) {
                                             $cloneHead.after($cloneHead.prev().prev());
 
                                             // 更新隐藏列顺序
-                                            $('#soul-columns' + tableId + '>li[data-value=' + $this.data('field') + ']').after($('#soul-columns' + tableId + '>li[data-value=' + $this.data('field') + ']').prev())
+                                            $('#soul-columns' + tableId + '>li[data-value=' + $this.data('field') + ']').after($('#soul-columns' + tableId + '>li[data-value=' + $this.data('field') + ']').prev());
 
                                             // 更新配置信息
                                             var x, y;
@@ -165,7 +165,7 @@ layui.define(['tableFilter', 'tableChild'], function (exports) {
                                             $cloneHead.prev().before($cloneHead.next());
 
                                             // 更新隐藏列顺序
-                                            $('#soul-columns' + tableId + '>li[data-value=' + $this.data('field') + ']').before($('#soul-columns' + tableId + '>li[data-value=' + $this.data('field') + ']').next())
+                                            $('#soul-columns' + tableId + '>li[data-value=' + $this.data('field') + ']').before($('#soul-columns' + tableId + '>li[data-value=' + $this.data('field') + ']').next());
 
                                             // 更新配置信息
                                             var x, y;
@@ -200,7 +200,7 @@ layui.define(['tableFilter', 'tableChild'], function (exports) {
                                                 $(this).prev().before($(this).next());
                                             }
                                         }
-                                    })
+                                    });
                                     if ($totalTable.length>0) {
                                         $totalTable.find('td[data-field=' + $this.data('field') + '][data-clone]').each(function (e) {
                                             $(this).prev().css('left', left);
@@ -226,7 +226,7 @@ layui.define(['tableFilter', 'tableChild'], function (exports) {
                                             top: e.clientY - $('#column-remove').height() / 2,
                                             left: e.clientX - $('#column-remove').width() / 2,
                                             'font-size': (originTop - e.clientY) + 'px'
-                                        })
+                                        });
                                         $('#column-remove').show();
                                     } else {
                                         $('#column-remove').hide();
@@ -234,7 +234,7 @@ layui.define(['tableFilter', 'tableChild'], function (exports) {
                                 }
                             }).on('mouseup', function () {
                                 $(document).unbind("selectstart");
-                                $('body').off('mousemove').off('mouseup')
+                                $('body').off('mousemove').off('mouseup');
                                 if (isStart && $cloneHead) {
                                     isStart = false;
                                     if (isDraging) {
@@ -299,7 +299,7 @@ layui.define(['tableFilter', 'tableChild'], function (exports) {
             }
         },
 
-    }
+    };
 
     // 输出
     exports('soulTable', mod);

@@ -1,11 +1,11 @@
-﻿using DotNetCore.CAP;
+﻿using System.Threading.Tasks;
 using MicroService.ApiGateway.Entites.Ocelot;
 using MicroService.ApiGateway.Ocelot.Dto;
 using MicroService.ApiGateway.Repositories;
 using MicroService.ApiGateway.Snowflake;
 using MicroService.ApiGatewayAdmin.Ocelot.Event;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using Volo.Abp.EventBus.Distributed;
 
 namespace MicroService.ApiGateway.Ocelot
 {
@@ -14,16 +14,16 @@ namespace MicroService.ApiGateway.Ocelot
     {
         private readonly IGlobalConfigRepository _globalConfigRepository;
         private readonly ISnowflakeIdGenerator _snowflakeIdGenerator;
-        private readonly ICapPublisher _eventPublisher;
+        private readonly IDistributedEventBus _distributedEventBus;
         public GlobalConfigurationAppService(
             IGlobalConfigRepository globalConfigRepository,
             ISnowflakeIdGenerator snowflakeIdGenerator,
-            ICapPublisher eventPublisher
+            IDistributedEventBus distributedEventBus
             )
         {
             _globalConfigRepository = globalConfigRepository;
             _snowflakeIdGenerator = snowflakeIdGenerator;
-            _eventPublisher = eventPublisher;
+            _distributedEventBus = distributedEventBus;
         }
 
         [HttpGet]
@@ -43,15 +43,17 @@ namespace MicroService.ApiGateway.Ocelot
         {
             await CheckPolicyAsync();
 
-            var globalConfiguration = new GlobalConfiguration(_snowflakeIdGenerator.NextId(), configurationDto.BaseUrl);
-            globalConfiguration.RequestIdKey = configurationDto.RequestIdKey;
-            globalConfiguration.DownstreamScheme = configurationDto.DownstreamScheme;
+            var globalConfiguration = new GlobalConfiguration(_snowflakeIdGenerator.NextId(), configurationDto.BaseUrl)
+            {
+                RequestIdKey = configurationDto.RequestIdKey, DownstreamScheme = configurationDto.DownstreamScheme
+            };
 
             ApplyGlobalConfigurationOptions(globalConfiguration, configurationDto);
 
             globalConfiguration = await _globalConfigRepository.InsertAsync(globalConfiguration, true);
 
-            await _eventPublisher.PublishAsync(ApiGatewayDomainConsts.Events_OcelotConfigChanged, new OcelotConfigChangeCommand("Global", "Create"));
+            // await _eventPublisher.PublishAsync(ApiGatewayDomainConsts.Events_OcelotConfigChanged, new OcelotConfigChangeCommand("Global", "Create"));
+            await _distributedEventBus.PublishAsync(new OcelotConfigChangeCommand("Global", "Create"));
 
             return ObjectMapper.Map<GlobalConfiguration, GlobalConfigurationDto>(globalConfiguration);
         }
@@ -72,8 +74,8 @@ namespace MicroService.ApiGateway.Ocelot
 
             globalConfiguration = await _globalConfigRepository.UpdateAsync(globalConfiguration, true);
 
-            await _eventPublisher.PublishAsync(ApiGatewayDomainConsts.Events_OcelotConfigChanged, new OcelotConfigChangeCommand("Global", "Modify"));
-
+            // await _eventPublisher.PublishAsync(ApiGatewayDomainConsts.Events_OcelotConfigChanged, new OcelotConfigChangeCommand("Global", "Modify"));
+            await _distributedEventBus.PublishAsync(new OcelotConfigChangeCommand("Global", "Modify"));
             return ObjectMapper.Map<GlobalConfiguration, GlobalConfigurationDto>(globalConfiguration);
         }
 

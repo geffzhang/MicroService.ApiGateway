@@ -79,7 +79,7 @@ layui.define(['table', 'tableFilter' ,'element', 'form'], function (exports) {
                         }
 
                     }
-                })
+                });
                 if (child.spread && child.show!=2) {
                     $tableBody.children('tbody').children('tr').children('td').children('.childTable').trigger('click');
                 }

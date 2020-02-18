@@ -17,7 +17,7 @@ namespace MicroService.ApiGateway.EntityFrameworkCore
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            Configure<DataFilterOptions>(options =>
+            Configure<AbpDataFilterOptions>(options =>
             {
                 options.DefaultStates.Add(typeof(IActivation), new DataFilterState(true));
             });

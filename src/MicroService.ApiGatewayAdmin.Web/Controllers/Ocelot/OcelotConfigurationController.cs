@@ -30,6 +30,7 @@ namespace MicroService.ApiGateway.Controllers.OcelotView
             _dynamicReRouteAppService = dynamicReRouteAppService;
             _reRouteAppService = reRouteAppService;
         }
+        
         [HttpGet]
         [Route("Global")]
         public async Task<IActionResult> Global()

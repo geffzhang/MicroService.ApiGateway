@@ -4,14 +4,16 @@ using MicroService.ApiGateway.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MicroService.ApiGatewayAdmin.Web.Migrations
 {
     [DbContext(typeof(ApiGatewayMigrationsDbContext))]
-    partial class ApiGatewayMigrationsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200210073558_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

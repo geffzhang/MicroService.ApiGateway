@@ -1,12 +1,12 @@
-﻿using MicroService.ApiGateway.Entites.Ocelot;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using MicroService.ApiGateway.Entites.Ocelot;
 using MicroService.ApiGateway.Ocelot.Dto;
 using MicroService.ApiGateway.Repositories;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Volo.Abp.Application.Dtos;
-using DotNetCore.CAP;
 using MicroService.ApiGatewayAdmin.Ocelot.Event;
+using Microsoft.AspNetCore.Mvc;
+using Volo.Abp.Application.Dtos;
+using Volo.Abp.EventBus.Distributed;
 
 namespace MicroService.ApiGateway.Ocelot
 {
@@ -14,14 +14,15 @@ namespace MicroService.ApiGateway.Ocelot
     public class ReRouteAppService : ApiGatewayApplicationServiceBase, IReRouteAppService
     {
         private readonly IReRouteRepository _reRouteRepository;
-        private readonly ICapPublisher _eventPublisher;
+        private readonly IDistributedEventBus _distributedEventBus;
 
         public ReRouteAppService(
             IReRouteRepository reRouteRepository,
-            ICapPublisher eventPublisher)
+            IDistributedEventBus distributedEventBus
+                )
         {
             _reRouteRepository = reRouteRepository;
-            _eventPublisher = eventPublisher;
+            _distributedEventBus = distributedEventBus;
         }
 
         [HttpPost]
@@ -38,8 +39,7 @@ namespace MicroService.ApiGateway.Ocelot
 
             var reRouteDto = ObjectMapper.Map<ReRoute, ReRouteDto>(reRoute);
 
-            await _eventPublisher.PublishAsync(ApiGatewayDomainConsts.Events_OcelotConfigChanged, new OcelotConfigChangeCommand("ReRoute", "Create"));
-
+            await _distributedEventBus.PublishAsync(new OcelotConfigChangeCommand("ReRoute", "Create"));
             return reRouteDto;
         }
 
@@ -69,8 +69,7 @@ namespace MicroService.ApiGateway.Ocelot
 
             var reRouteDto = ObjectMapper.Map<ReRoute, ReRouteDto>(reRoute);
 
-            await _eventPublisher.PublishAsync(ApiGatewayDomainConsts.Events_OcelotConfigChanged, new OcelotConfigChangeCommand("ReRoute", "Modify"));
-
+            await _distributedEventBus.PublishAsync(new OcelotConfigChangeCommand("ReRoute", "Modify"));
             return reRouteDto;
         }
 
@@ -120,10 +119,8 @@ namespace MicroService.ApiGateway.Ocelot
         public async Task DeleteAsync(long routeId)
         {
             await CheckPolicyAsync();
-
             await _reRouteRepository.DeleteAsync(x => x.ReRouteId.Equals(routeId));
-
-            await _eventPublisher.PublishAsync(ApiGatewayDomainConsts.Events_OcelotConfigChanged, new OcelotConfigChangeCommand("ReRoute", "Delete"));
+            await _distributedEventBus.PublishAsync(new OcelotConfigChangeCommand("ReRoute", "Delete"));
         }
 
         [HttpDelete]
@@ -131,10 +128,8 @@ namespace MicroService.ApiGateway.Ocelot
         public async Task RemoveAsync()
         {
             await CheckPolicyAsync();
-
             await _reRouteRepository.RemoveAsync();
-
-            await _eventPublisher.PublishAsync(ApiGatewayDomainConsts.Events_OcelotConfigChanged, new OcelotConfigChangeCommand("ReRoute", "Clean"));
+            await _distributedEventBus.PublishAsync(new OcelotConfigChangeCommand("ReRoute", "Clean"));
         }
 
         protected virtual void ApplyReRouteOptions(ReRoute reRoute, ReRouteDto routeDto)

@@ -1,4 +1,4 @@
-﻿@using Microsoft.Extensions.Localization
+﻿﻿@using Microsoft.Extensions.Localization
 @using Microsoft.Extensions.Options
 @using Volo.Abp.AspNetCore.MultiTenancy
 @using Volo.Abp.AspNetCore.Mvc.AntiForgery
@@ -9,7 +9,7 @@
 @using Volo.Abp.MultiTenancy
 @inject IAbpAntiForgeryManager AbpAntiForgeryManager
 @inject IBrandingProvider BrandingProvider
-@inject IOptions<MultiTenancyOptions> MultiTenancyOptions
+@inject IOptions<AbpMultiTenancyOptions> MultiTenancyOptions
 @inject ICurrentTenant CurrentTenant
 @inject IStringLocalizer<AbpUiMultiTenancyResource> MultiTenancyStringLocalizer
 @inject ITenantResolveResultAccessor TenantResolveResultAccessor

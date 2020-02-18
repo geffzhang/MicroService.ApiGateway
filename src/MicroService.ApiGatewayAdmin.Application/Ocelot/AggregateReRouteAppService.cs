@@ -1,11 +1,11 @@
-﻿using DotNetCore.CAP;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MicroService.ApiGateway.Entites.Ocelot;
 using MicroService.ApiGateway.Ocelot.Dto;
 using MicroService.ApiGateway.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.EventBus.Distributed;
 
 namespace MicroService.ApiGateway.Ocelot
 {
@@ -13,13 +13,14 @@ namespace MicroService.ApiGateway.Ocelot
     public class AggregateReRouteAppService : ApiGatewayApplicationServiceBase, IAggregateReRouteAppService
     {
         private readonly IAggregateReRouteRepository _aggregateReRouteRepository;
-        private readonly ICapPublisher _eventPublisher;
+        private readonly IDistributedEventBus _distributedEventBus;
 
         public AggregateReRouteAppService(IAggregateReRouteRepository aggregateReRouteRepository,
-            ICapPublisher capPublisher)
+            IDistributedEventBus distributedEventBus
+            )
         {
             _aggregateReRouteRepository = aggregateReRouteRepository;
-            _eventPublisher = capPublisher;
+            _distributedEventBus = distributedEventBus;
         }
 
         [HttpGet]
