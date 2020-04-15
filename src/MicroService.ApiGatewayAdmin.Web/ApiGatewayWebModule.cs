@@ -71,7 +71,7 @@ namespace MicroService.ApiGateway
                 options.Kind = System.DateTimeKind.Local;
             });
 
-            ConfigureIdentityAuthentication(context.Services, configuration.GetSection("Identity"));
+            //ConfigureIdentityAuthentication(context.Services, configuration.GetSection("Identity"));
             ConfigureDatabaseServices();
             ConfigureAutoMapper();
             ConfigureVirtualFileSystem(hostingEnvironment);
@@ -260,7 +260,7 @@ namespace MicroService.ApiGateway
             app.UseRouting();
             app.UseCorrelationId();
             app.UseVirtualFiles();
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseAbpRequestLocalization();
 
             app.UseSwagger();

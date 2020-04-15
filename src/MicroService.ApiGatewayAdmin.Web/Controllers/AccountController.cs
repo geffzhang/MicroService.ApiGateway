@@ -7,7 +7,7 @@ using Volo.Abp.AspNetCore.Mvc;
 
 namespace MicroService.ApiGateway.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class AccountController : AbpController
     {
         public IActionResult Logout()
